@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Food Demand Prediction</title>
+  </head>
+  <body>
+    <h1>Food Demand Prediction</h1>
+    <form id="prediction-form">
+      <label for="feature-selector">Select Feature to Predict:</label><br />
+      <select id="feature-selector" name="feature">
+        <option value="homepage_featured">Homepage Featured</option>
+        <option value="emailer_for_promotion">Emailer for Promotion</option>
+        <option value="meal_id">Meal ID</option>
+        <option value="center_id">Center ID</option></select
+      ><br /><br />
+      <label for="feature-value">Enter Feature Value:</label><br />
+      <input
+        type="number"
+        id="feature-value"
+        name="value"
+        required
+      /><br /><br />
+      <button type="submit">Predict</button>
+    </form>
+    <div id="prediction-result"></div>
+
+    <script>
+      document
+        .getElementById("prediction-form")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+          const form = event.target;
+          const feature = form.feature.value;
+          const value = form.value.value;
+          const data = {
+            [feature]: value,
+          };
+          fetch("/predict", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => response.json())
+            .then((result) => {
+              document.getElementById(
+                "prediction-result"
+              ).innerText = `Predicted Orders: ${result.prediction}`;
+            })
+            .catch((error) => console.error("Error:", error));
+        });
+    </script>
+  </body>
+</html>
